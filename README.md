@@ -2,8 +2,6 @@
 
 Ecossistema local que conecta **capacitação, demanda e oferta de serviços no mesmo território** (bairro de periferia). Protótipo em Java para a Global Solution 2026 · CitizenTech.
 
-> Nome antigo no capítulo: *ConectaOfício*. É o mesmo projeto; aqui usamos **Connecta** em tudo.
-
 ## Como rodar (resumo rápido)
 
 ### Opção 1 — só com Docker (nada pra instalar além do Docker)
