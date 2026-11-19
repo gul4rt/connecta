@@ -59,20 +59,6 @@ O roteiro do vídeo está em [`docs/DEMO.md`](docs/DEMO.md).
 
 Variáveis de ambiente (veja `.env.example`): `DB_URL`, `DB_USER`, `DB_PASSWORD`, `PORT`, `CONNECTA_ENV` (`dev` mostra a página `/design`; `prod` esconde).
 
-## Stack e por quê
-
-| Camada | Escolha | Por quê (uma frase) |
-|---|---|---|
-| Linguagem | Java 21 (LTS) | Linguagem do curso; orientação a objetos como eixo |
-| Build | Maven | Um comando para compilar, testar e rodar |
-| Web | Javalin 6.7.0 | Leve, rotas explícitas, sem "mágica" de anotações |
-| Templates | Pebble 3.1.6 | HTML no servidor, com herança e macros (a versão que o Javalin 6 espera) |
-| Acesso a dados | JDBC puro + HikariCP 6.3.0 | SQL visível (requisito do trabalho), `PreparedStatement` sempre |
-| Migrações | Flyway 11.7.2 | Esquema do banco versionado em SQL (`src/main/resources/db/migration`) |
-| Banco | PostgreSQL 17 (Docker) | Relacional, rodando localmente sem instalação |
-| Testes | JUnit 5.12.2 | Obrigatórios para o algoritmo de recomendação e regras de privacidade |
-| Logs | SLF4J + Logback 1.5.18 | Padrão de fato no ecossistema Java |
-
 ## Estrutura do código
 
 ```
