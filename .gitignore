@@ -1,0 +1,23 @@
+# Build
+target/
+
+# Segredos locais (nunca versionar)
+.env
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Logs locais
+*.log
+
+# Documentação interna e instruções do agente: ficam fora do versionamento
+# (mantidos localmente; docs/ contém material do grupo e CLAUDE.md é o
+# guia de trabalho do projeto)
+docs/
+CLAUDE.md

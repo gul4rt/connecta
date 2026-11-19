@@ -1,0 +1,41 @@
+{% extends "base" %}
+
+{% block titulo %}Connecta — O que você quer fazer hoje?{% endblock %}
+
+{% block conteudo %}
+<h1>O que você quer fazer hoje?</h1>
+
+{# Componentes em HTML direto (as mesmas classes do components.css).
+   As macros ficam em components/ui.peb, usadas pela página /design. #}
+<div class="choices section">
+  <a class="choice choice--filled" href="/trilhas">
+    <span class="choice-title">Quero aprender e trabalhar</span>
+    <span class="choice-subtitle">Cursos grátis para você ser encontrado pelos vizinhos</span>
+  </a>
+  <a class="choice choice--outlined" href="/vitrine">
+    <span class="choice-title">Preciso de um serviço</span>
+    <span class="choice-subtitle">Ache quem faz perto da sua casa</span>
+  </a>
+</div>
+
+<section class="section" aria-labelledby="titulo-procura">
+  <h2 id="titulo-procura">O bairro está procurando</h2>
+  <div class="card" style="margin-top:12px;">
+    {% for item in procura %}
+    <div class="list-line">
+      <span>{{ item.categoryName }}</span>
+      {% if item.demandLabel() == 'Muita procura' %}
+      <span class="pill pill--brand">{{ item.demandLabel() }}</span>
+      {% else %}
+      <span class="pill pill--neutral">{{ item.demandLabel() }}</span>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% if dadosReais %}
+  <p class="note">Calculado a partir das demandas abertas no seu bairro{% if bairroNome %} ({{ bairroNome }}){% endif %}.</p>
+  {% else %}
+  <p class="note">Exemplo para demonstração — entre com sua conta para ver os dados reais do seu bairro.</p>
+  {% endif %}
+</section>
+{% endblock %}

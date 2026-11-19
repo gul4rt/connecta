@@ -1,0 +1,26 @@
+{% extends "base" %}
+
+{% block titulo %}Connecta — Código de recuperação{% endblock %}
+
+{% block conteudo %}
+<div class="form-page">
+  <h1>Guarde este código</h1>
+  <p class="subtitle">
+    {% if modo == 'cadastro' %}Sua conta foi criada! Este código recupera sua senha se você esquecer.
+    {% elseif modo == 'recuperacao' %}Senha trocada com sucesso! Este é o seu código NOVO — o anterior deixou de valer.
+    {% else %}Senha trocada com sucesso! Este é o seu código NOVO — o anterior deixou de valer.
+    {% endif %}
+  </p>
+
+  <div class="card recovery-code">
+    <span class="recovery-code-value">{{ codigo }}</span>
+    <p class="field-help">Anote e guarde em lugar seguro. Ele aparece apenas agora: o sistema guarda só o hash do código, não é possível vê-lo de novo.</p>
+  </div>
+
+  {% if modo == 'cadastro' %}
+  <a class="btn btn-primary" href="/perfil/completar">Completar meu perfil</a>
+  {% else %}
+  <a class="btn btn-primary" href="/entrar">Entrar com a nova senha</a>
+  {% endif %}
+</div>
+{% endblock %}

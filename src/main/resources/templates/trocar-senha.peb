@@ -1,0 +1,40 @@
+{% extends "base" %}
+
+{% block titulo %}Connecta — Trocar senha{% endblock %}
+
+{% block conteudo %}
+<div class="form-page">
+  <h1>Trocar senha</h1>
+  <p class="subtitle">Ao trocar a senha, um código de recuperação NOVO é gerado e mostrado na sequência.</p>
+
+  {% if erros.size() > 0 %}
+  <div class="form-errors" role="alert">
+    {% for erro in erros %}<p>{{ erro }}</p>{% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post" action="/perfil/senha" class="form card">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+    <div class="form-field">
+      <label for="senhaAtual">Senha atual</label>
+      <input type="password" id="senhaAtual" name="senhaAtual" autocomplete="current-password" required>
+    </div>
+
+    <div class="form-field">
+      <label for="senha">Nova senha</label>
+      <input type="password" id="senha" name="senha" autocomplete="new-password" required minlength="8">
+      <p class="field-help">Pelo menos 8 caracteres.</p>
+    </div>
+
+    <div class="form-field">
+      <label for="confirmacao">Confirmar nova senha</label>
+      <input type="password" id="confirmacao" name="confirmacao" autocomplete="new-password" required minlength="8">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Trocar senha</button>
+  </form>
+
+  <p class="form-alt"><a href="/perfil">Voltar para o perfil</a></p>
+</div>
+{% endblock %}

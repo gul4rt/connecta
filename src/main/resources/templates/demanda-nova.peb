@@ -1,0 +1,63 @@
+{% extends "base" %}
+
+{% block titulo %}Connecta — Registrar demanda{% endblock %}
+
+{% block conteudo %}
+{% from "components/ui" import iconArrowLeft %}
+<div class="form-page">
+  <p class="back-link"><a href="/vitrine">{{ iconArrowLeft() }} Voltar para a vitrine</a></p>
+  <h1>Que serviço você precisa?</h1>
+  <p class="subtitle">Sua demanda fica visível para o bairro e ajuda o Connecta a saber o que falta por aqui.</p>
+
+  {% if erros.size() > 0 %}
+  <div class="form-errors" role="alert">
+    {% for erro in erros %}<p>{{ erro }}</p>{% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post" action="/demandas" class="form card">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+    <div class="form-field">
+      <label for="categoria">Categoria</label>
+      <select id="categoria" name="categoria" required>
+        {% for categoria in todasCategorias %}
+        <option value="{{ categoria.id }}"{% if categoria.id().toString() == categoriaSelecionada %} selected{% endif %}>{{ categoria.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-field">
+      <label for="descricao">Descreva em uma frase</label>
+      <input type="text" id="descricao" name="descricao" value="{{ descricao }}"
+             required minlength="10" maxlength="120"
+             placeholder="Ex.: preciso de alguém para consertar o portão">
+      <p class="field-help">Curto e direto: entre 10 e 120 caracteres.</p>
+    </div>
+
+    <div class="form-field">
+      <label for="oferta">Quanto está disposto a pagar (R$)</label>
+      <input type="text" id="oferta" name="oferta" value="{{ oferta }}" inputmode="decimal"
+             required placeholder="Ex.: 120,00">
+    </div>
+
+    <div class="form-field">
+      <label for="telefone">Telefone para contato (DDD + número)</label>
+      <input type="text" id="telefone" name="telefone" value="{{ telefone }}" inputmode="numeric"
+             required pattern="\d{10,11}" maxlength="11" placeholder="Ex.: 11987654321">
+      <p class="field-help">Quem atender a demanda usa esse número para falar com você.</p>
+    </div>
+
+    <div class="form-field">
+      <label for="bairro">Bairro da demanda</label>
+      <input type="text" id="bairro" name="bairro" value="{{ bairro }}" required minlength="3" maxlength="80"
+             autocomplete="off" aria-describedby="ajuda-bairro">
+      <ul id="sugestoes-bairros" class="sugestoes" hidden></ul>
+      <p class="field-help" id="ajuda-bairro">Padrão é o seu bairro{% if bairroPerfil %} ({{ bairroPerfil }}){% endif %}. Pode abrir para outro bairro se for para outra pessoa ou domicílio.</p>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Registrar demanda</button>
+  </form>
+</div>
+<script src="/static/js/bairros.js" defer></script>
+{% endblock %}

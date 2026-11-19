@@ -1,0 +1,239 @@
+/* ============================================================
+   base.css — reset, estrutura da página, tipografia, navegação
+   e responsividade (mobile-first, seção 7.7 do CLAUDE.md).
+   ============================================================ */
+
+/* Reset curto */
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+img {
+  max-width: 100%;
+  display: block;
+}
+
+html {
+  /* com [data-text="large"], o font-size sobe via tokens.css */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;   /* corpo 17px */
+  line-height: 1.5;
+  /* espaço para a barra inferior fixa no mobile */
+  padding-bottom: calc(64px + env(safe-area-inset-bottom));
+}
+
+/* Tipografia */
+h1, h2, h3 {
+  font-family: var(--font-title);
+  line-height: 1.1;
+  font-weight: 700;
+}
+h1 { font-size: clamp(2rem, 1.75rem + 1.2vw, 3rem); }   /* 32 → 48px */
+h2 { font-size: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem); font-weight: 600; } /* 20 → 24px */
+.card-title { font-size: 1.5625rem; }                    /* 25px */
+
+/* Respiro entre título e subtítulo em TODAS as páginas — o reset acima
+   zera as margens, então o espaçamento é definido aqui, uma vez só. */
+main h1 {
+  margin-bottom: 6px;
+}
+main h2 {
+  margin-bottom: 6px;
+}
+main .subtitle {
+  margin-bottom: 10px;
+}
+.subtitle {
+  color: var(--muted);
+  font-size: 0.9375rem;                                  /* texto secundário 15px */
+}
+.note {
+  color: var(--muted);
+  font-size: 0.9375rem;
+  margin-top: 12px;
+}
+
+a {
+  color: inherit;
+}
+
+/* Foco visível claro em todo o site */
+:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Link "ir para o conteúdo" para navegação por teclado */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 8px;
+  background: var(--surface);
+  border: 2px solid var(--ink);
+  padding: 12px 16px;
+  z-index: 100;
+  border-radius: var(--radius-button);
+  text-decoration: none;
+  font-weight: 600;
+}
+.skip-link:focus {
+  left: 12px;
+}
+
+/* ---------- Container ---------- */
+.container {
+  width: 100%;
+  max-width: 760px;
+  margin-inline: auto;
+  padding-inline: 20px;   /* padding lateral do mobile */
+}
+
+/* ---------- Cabeçalho (wordmark + navegação + chip de bairro) ---------- */
+.site-header {
+  background: var(--surface-nav);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 64px;
+}
+
+/* Navegação superior: só no tablet/desktop */
+.top-nav {
+  display: none;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  margin-inline: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  color: var(--ink);
+  border-bottom: 3px solid transparent;
+}
+.nav-link.is-active {
+  border-bottom-color: var(--brand);
+  color: var(--brand);
+  font-weight: 600;
+}
+.nav-link:hover {
+  color: var(--brand);
+}
+
+/* ---------- Barra inferior fixa (mobile) ---------- */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  min-height: 64px;
+  background: var(--surface-nav);
+  border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.bottom-nav .nav-link {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 8px;
+  border-bottom: none;
+  border-top: 3px solid transparent;
+  font-size: 0.9375rem;
+}
+.bottom-nav .nav-link.is-active {
+  border-top-color: var(--brand);
+  border-bottom-color: transparent;
+}
+
+/* ---------- Conteúdo ---------- */
+main {
+  padding-block: 24px 40px;
+}
+
+/* ---------- Rodapé ---------- */
+.site-footer {
+  margin-top: 40px;
+  padding-block: 20px;
+  border-top: 1px solid var(--line);
+}
+.a11y-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin-bottom: 12px;
+}
+.a11y-controls a {
+  color: var(--muted);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ---------- Responsividade ---------- */
+@media (min-width: 720px) {
+  body {
+    padding-bottom: 0;
+  }
+  .bottom-nav {
+    display: none;
+  }
+  .top-nav {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    margin-left: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1120px;
+  }
+}
+
+/* ---------- Movimento reduzido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Cabeçalho apertado no mobile: encolhe wordmark e chip */
+@media (max-width: 479px) {
+  .wordmark {
+    font-size: 1.125rem;
+  }
+  .header-actions .neighborhood-chip {
+    padding: 8px 10px;
+  }
+}
+
+/* Link "voltar" no topo das páginas: garante respiro entre ele e o título,
+   que o reset de margens teria colado */
+.back-link {
+  margin-bottom: 12px;
+}

@@ -1,0 +1,60 @@
+{% extends "base" %}
+
+{% block titulo %}Connecta — Avaliar serviço{% endblock %}
+
+{% block conteudo %}
+{% from "components/ui" import iconArrowLeft %}
+<div class="form-page">
+  {% if tipo == 'pedido' %}
+  <p class="back-link"><a href="/perfil/pedidos">{{ iconArrowLeft() }} Voltar para os pedidos</a></p>
+  {% else %}
+  <p class="back-link"><a href="/perfil/demandas">{{ iconArrowLeft() }} Voltar para as demandas</a></p>
+  {% endif %}
+
+  <h1>Avaliar serviço</h1>
+  <p class="subtitle">Sua avaliação ajuda os vizinhos a escolher com confiança.</p>
+
+  {% if erros.size() > 0 %}
+  <div class="form-errors" role="alert">
+    {% for erro in erros %}<p>{{ erro }}</p>{% endfor %}
+  </div>
+  {% endif %}
+
+  {% if alvo == null %}
+  <div class="card empty-state">
+    <p>Este trabalho não pode ser avaliado agora.</p>
+    <p class="subtitle">Só avalia quem contratou o serviço (proposta aceita ou pedido aceito), uma vez por trabalho.</p>
+  </div>
+  {% else %}
+  <div class="card">
+    <p class="demand-meta">Prestador: <strong>{{ alvo.providerName }}</strong></p>
+    <form method="post" action="/avaliar" class="form">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      <input type="hidden" name="tipo" value="{{ tipo }}">
+      <input type="hidden" name="id" value="{{ id }}">
+
+      <fieldset class="rating-fieldset">
+        <legend>Como foi o serviço?</legend>
+        <div class="rating-options">
+          {% for n in [1, 2, 3, 4, 5] %}
+          <label class="rating-option">
+            <input type="radio" name="nota" value="{{ n }}" required>
+            <span>{{ n }}</span>
+          </label>
+          {% endfor %}
+        </div>
+        <p class="field-help">1 = ruim · 5 = ótimo</p>
+      </fieldset>
+
+      <div class="form-field">
+        <label for="comentario">Comentário (opcional)</label>
+        <textarea id="comentario" name="comentario" maxlength="300"
+                  placeholder="Contou como foi o atendimento"></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Enviar avaliação</button>
+    </form>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

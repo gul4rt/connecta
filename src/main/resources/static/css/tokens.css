@@ -1,0 +1,99 @@
+/* ============================================================
+   tokens.css — fontes, cores e medidas do design system Connecta.
+   Tema claro (padrão) e tema escuro (html[data-theme="dark"]).
+   Documentação visual completa: página /design (em desenvolvimento).
+   ============================================================ */
+
+/* Fontes hospedadas no próprio projeto (subset latin), com font-display: swap */
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  src: url('/static/fonts/bricolage-grotesque-latin-600-normal.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  src: url('/static/fonts/bricolage-grotesque-latin-700-normal.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Public Sans';
+  src: url('/static/fonts/public-sans-latin-400-normal.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Public Sans';
+  src: url('/static/fonts/public-sans-latin-500-normal.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Public Sans';
+  src: url('/static/fonts/public-sans-latin-600-normal.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Cores do tema claro (seção 7.3 do CLAUDE.md) */
+  --ink: #1F1B16;
+  --paper: #F6F1E7;
+  --surface: #FFFFFF;
+  --surface-nav: #FBF8F2;
+  --line: #DDD3C0;
+  --line-strong: #CFC4AE;
+  --muted: #5C5448;
+  --brand: #A63A0B;
+  --brand-tint: #F3D9CB;
+  --brand-tint-ink: #8A2F08;
+  --ok: #1F5F4A;
+  --ok-tint: #DCEBE3;
+  --neutral-tint: #EAE3D3;
+  --neutral-tint-ink: #4A4236;
+  --avatar-bg: #E4DAC4;
+  --step-pending: #B9AE98;
+
+  /* Raios */
+  --radius-button: 12px;
+  --radius-card: 18px;
+  --radius-choice: 16px;
+  --radius-pill: 999px;
+
+  /* Bordas padrão */
+  --border-width: 1px;
+
+  /* Tipografia */
+  --font-title: 'Bricolage Grotesque', 'Segoe UI', sans-serif;
+  --font-body: 'Public Sans', 'Segoe UI', sans-serif;
+
+  /* Base do texto */
+  font-size: 100%;
+}
+
+/* Tema escuro: mesmo desenho, paleta quente adaptada para fundo escuro.
+   Terracota fica mais clara para manter o contraste do texto. */
+html[data-theme="dark"] {
+  --ink: #F0EAE0;
+  --paper: #17130F;
+  --surface: #211C16;
+  --surface-nav: #1B1712;
+  --line: #3A332A;
+  --line-strong: #4A4236;
+  --muted: #B3A995;
+  --brand: #E05A20;
+  --brand-tint: #3A2417;
+  --brand-tint-ink: #F3B79A;
+  --ok: #5BBFA0;
+  --ok-tint: #1E332B;
+  --neutral-tint: #2C261E;
+  --neutral-tint-ink: #D8CFC0;
+  --avatar-bg: #3A3428;
+  --step-pending: #6B6152;
+}

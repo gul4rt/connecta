@@ -1,0 +1,66 @@
+{% extends "base" %}
+
+{% block titulo %}Connecta — Criar conta{% endblock %}
+
+{% block conteudo %}
+<div class="form-page">
+  <h1>Criar conta</h1>
+  <p class="subtitle">Dois minutos e você já está dentro.</p>
+
+  {% if erros.size() > 0 %}
+  <div class="form-errors" role="alert">
+    {% for erro in erros %}<p>{{ erro }}</p>{% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post" action="/cadastro" class="form card">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+    <div class="form-field">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" value="{{ username }}" autocomplete="username"
+             required minlength="3" maxlength="40" pattern="[A-Za-z0-9._]{3,40}"
+             aria-describedby="ajuda-username">
+      <p class="field-help" id="ajuda-username">De 3 a 40 caracteres: letras, números, ponto ou _.</p>
+    </div>
+
+    <div class="form-field">
+      <label for="senha">Senha</label>
+      <input type="password" id="senha" name="senha" autocomplete="new-password" required minlength="8"
+             aria-describedby="ajuda-senha">
+      <p class="field-help" id="ajuda-senha">Pelo menos 8 caracteres.</p>
+    </div>
+
+    <div class="form-field">
+      <label for="confirmacao">Confirmar senha</label>
+      <input type="password" id="confirmacao" name="confirmacao" autocomplete="new-password" required minlength="8">
+    </div>
+
+    {# Escolha de perfil: decisão do grupo em 2026-11-19 #}
+    <fieldset class="form-field role-choice">
+      <legend>O que você quer fazer no Connecta?</legend>
+      <label class="choice choice--outlined choice-radio">
+        <input type="radio" name="role" value="provider">
+        <span class="choice-title">Quero prestar serviços</span>
+        <span class="choice-subtitle">Tenho um ofício e quero ser encontrado pelos vizinhos</span>
+      </label>
+      <label class="choice choice--outlined choice-radio">
+        <input type="radio" name="role" value="seeker">
+        <span class="choice-title">Quero contratar um serviço</span>
+        <span class="choice-subtitle">Preciso de alguém que faça perto da minha casa</span>
+      </label>
+    </fieldset>
+
+    <div class="form-field consent">
+      <label>
+        <input type="checkbox" name="consentimento" required>
+        <span>Autorizo o Connecta a guardar e usar meus dados (bairro, habilidades e contato) para conectar serviços no meu bairro, conforme a LGPD.</span>
+      </label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Criar conta</button>
+  </form>
+
+  <p class="form-alt">Já tem conta? <a href="/entrar">Entrar</a></p>
+</div>
+{% endblock %}

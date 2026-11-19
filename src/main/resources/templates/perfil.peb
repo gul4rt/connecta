@@ -1,0 +1,103 @@
+{% extends "base" %}
+
+{% block titulo %}Connecta — Seu perfil{% endblock %}
+
+{% block conteudo %}
+{% from "components/ui" import verifiedPill %}
+<div class="form-page profile-page">
+  {% if modo == 'completar' %}
+  <h1>Complete o seu perfil</h1>
+  <p class="subtitle">Conte para o bairro quem você é. Você pode mudar isso depois quando quiser.</p>
+  {% else %}
+  <h1>Seu perfil</h1>
+  <p class="subtitle">Edite seus dados quando quiser.</p>
+  {% endif %}
+
+  {# Cartão de identidade: quem é você na plataforma #}
+  <div class="card profile-card">
+    <span class="avatar" aria-hidden="true">{{ usuarioInicial }}</span>
+    <div class="profile-id">
+      <span class="profile-name">{% if nome %}{{ nome }}{% else %}{{ usuarioUsername }}{% endif %}</span>
+      <span class="profile-sub">@{{ usuarioUsername }} · {{ usuarioRoleLabel }}</span>
+      {# Selo verificado: vem de trilha concluída (Fase 3) ou boas avaliações (Fase 5) #}
+      {% if temSelo %}
+      <span>{{ verifiedPill() }} Trilha concluída</span>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if modo == 'editar' %}
+  {# Atalhos: habilidades, demandas e pedidos #}
+  <div class="shortcuts">
+    <a class="shortcut card" href="/perfil/habilidades">
+      <strong>Minhas habilidades</strong>
+      <span class="subtitle">O que sei fazer e o que quero aprender</span>
+    </a>
+    <a class="shortcut card" href="/perfil/demandas">
+      <strong>Minhas demandas</strong>
+      <span class="subtitle">Serviços que registrei que estava procurando</span>
+    </a>
+    <a class="shortcut card" href="/perfil/pedidos">
+      <strong>Pedidos de serviço</strong>
+      <span class="subtitle">Chamados diretos entre você e os prestadores do bairro</span>
+    </a>
+  </div>
+  {% endif %}
+
+  {% if erros.size() > 0 %}
+  <div class="form-errors" role="alert">
+    {% for erro in erros %}<p>{{ erro }}</p>{% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post" action="/perfil" class="form card">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+    <div class="form-field">
+      <label for="nome">Seu nome</label>
+      <input type="text" id="nome" name="nome" value="{{ nome }}" required minlength="2" maxlength="80">
+    </div>
+
+    <div class="form-field">
+      <label for="bairro">Seu bairro (São Paulo/SP)</label>
+      <input type="text" id="bairro" name="bairro" value="{{ bairro }}" required minlength="3" maxlength="80"
+             autocomplete="off" aria-describedby="ajuda-bairro">
+      <ul id="sugestoes-bairros" class="sugestoes" hidden></ul>
+      <p class="field-help" id="ajuda-bairro">Digite e escolha da lista. Se a lista não carregar, pode digitar direto.</p>
+    </div>
+
+    {% if usuarioRole == 'provider' %}
+    <div class="form-field">
+      <label for="telefone">Telefone (com DDD, só números)</label>
+      <input type="text" id="telefone" name="telefone" value="{{ telefone }}" inputmode="numeric"
+             pattern="\d{10,11}" maxlength="11" aria-describedby="ajuda-telefone">
+      <p class="field-help" id="ajuda-telefone">Seu telefone <strong>nunca aparece</strong> na vitrine. Só é liberado para quem você aceitar atender.</p>
+    </div>
+    {% endif %}
+
+    {% if modo == 'completar' %}
+    <button type="submit" class="btn btn-primary">Salvar e continuar</button>
+    {% else %}
+    <button type="submit" class="btn btn-primary">Salvar alterações</button>
+    {% endif %}
+  </form>
+
+  <section class="security-zone" aria-labelledby="titulo-seguranca">
+    <h2 id="titulo-seguranca">Segurança</h2>
+    <p class="subtitle">Perdeu a senha? Use o código de recuperação em <a href="/recuperar">Recuperar senha</a>. A cada troca de senha, um código novo é gerado.</p>
+    <a class="btn btn-secondary" href="/perfil/senha">Trocar senha</a>
+  </section>
+
+  {% if modo == 'editar' %}
+  <section class="danger-zone" aria-labelledby="titulo-excluir">
+    <h2 id="titulo-excluir">Excluir conta</h2>
+    <p class="subtitle">Apaga seu perfil e seus dados do Connecta. Não tem como desfazer.</p>
+    <form method="post" action="/perfil/excluir">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      <button type="submit" class="btn btn-danger">Excluir minha conta</button>
+    </form>
+  </section>
+  {% endif %}
+</div>
+<script src="/static/js/bairros.js" defer></script>
+{% endblock %}

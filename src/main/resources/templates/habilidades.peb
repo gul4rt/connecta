@@ -1,0 +1,92 @@
+{% extends "base" %}
+
+{% block titulo %}Connecta — Habilidades{% endblock %}
+
+{% block conteudo %}
+<div class="form-page">
+  <p class="back-link"><a href="/perfil">&larr; Voltar para o perfil</a></p>
+  <h1>Suas habilidades</h1>
+  <p class="subtitle">Conte o que você já sabe fazer e o que quer aprender. Pode ser algo aprendido na prática, sem diploma.</p>
+
+  {% if erros.size() > 0 %}
+  <div class="form-errors" role="alert">
+    {% for erro in erros %}<p>{{ erro }}</p>{% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post" action="/perfil/habilidades" class="form card">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+    <div class="form-field">
+      <label for="nome">Que habilidade?</label>
+      <input type="text" id="nome" name="nome" required minlength="3" maxlength="60"
+             placeholder="Ex.: conserto de bicicletas">
+    </div>
+
+    <div class="form-field">
+      <label for="categoria">Categoria</label>
+      <select id="categoria" name="categoria" required>
+        {% for categoria in todasCategorias %}
+        <option value="{{ categoria.id }}">{{ categoria.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <fieldset class="form-field role-choice">
+      <legend>O que você quer declarar?</legend>
+      <label class="choice choice--outlined choice-radio">
+        <input type="radio" name="kind" value="have" checked>
+        <span class="choice-title">Já sei fazer</span>
+        <span class="choice-subtitle">Aparece como o que você oferece</span>
+      </label>
+      <label class="choice choice--outlined choice-radio">
+        <input type="radio" name="kind" value="want">
+        <span class="choice-title">Quero aprender</span>
+        <span class="choice-subtitle">Aparece nas suas trilhas de cursos</span>
+      </label>
+    </fieldset>
+
+    <button type="submit" class="btn btn-primary">Adicionar habilidade</button>
+  </form>
+
+  <section class="section" aria-labelledby="titulo-sei-fazer">
+    <h2 id="titulo-sei-fazer">O que você sabe fazer</h2>
+    {% if seiFazer.size() == 0 %}
+    <p class="note">Nada aqui ainda. Adicione a primeira acima.</p>
+    {% else %}
+    <ul class="skill-list card">
+      {% for habilidade in seiFazer %}
+      <li class="skill-item">
+        <span><span class="pill pill--ok">{{ habilidade.categoryName }}</span> {{ habilidade.name }}</span>
+        <form method="post" action="/perfil/habilidades/excluir">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <input type="hidden" name="id" value="{{ habilidade.id }}">
+          <button type="submit" class="link-button" aria-label="Excluir {{ habilidade.name }}">Excluir</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </section>
+
+  <section class="section" aria-labelledby="titulo-quero-aprender">
+    <h2 id="titulo-quero-aprender">O que você quer aprender</h2>
+    {% if queroAprender.size() == 0 %}
+    <p class="note">Nada aqui ainda. Adicione acima o que gostaria de aprender.</p>
+    {% else %}
+    <ul class="skill-list card">
+      {% for habilidade in queroAprender %}
+      <li class="skill-item">
+        <span><span class="pill pill--brand">{{ habilidade.categoryName }}</span> {{ habilidade.name }}</span>
+        <form method="post" action="/perfil/habilidades/excluir">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <input type="hidden" name="id" value="{{ habilidade.id }}">
+          <button type="submit" class="link-button" aria-label="Excluir {{ habilidade.name }}">Excluir</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

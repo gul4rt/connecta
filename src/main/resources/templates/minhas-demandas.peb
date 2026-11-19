@@ -1,0 +1,117 @@
+{% extends "base" %}
+
+{% block titulo %}Connecta — Minhas demandas{% endblock %}
+
+{% block conteudo %}
+{% from "components/ui" import iconCheck %}
+<div class="form-page">
+  <p class="back-link"><a href="/perfil">&larr; Voltar para o perfil</a></p>
+  <h1>Minhas demandas</h1>
+  <p class="subtitle">O que você registrou que estava procurando. Expanda um card para ver as propostas recebidas.</p>
+
+  {% if avaliadoAgora %}
+  <div class="card selo-banner"><span>Avaliação enviada. Obrigado por ajudar o bairro a escolher com confiança.</span></div>
+  {% endif %}
+
+  {% if minhasDemandas.size() == 0 %}
+  <div class="card empty-state">
+    <p>Você não registrou nenhuma demanda ainda.</p>
+    <a class="btn btn-primary" href="/demandas/nova">Registrar uma demanda</a>
+  </div>
+  {% else %}
+  <div class="demand-list">
+    {% for cartao in minhasDemandas %}
+    <details class="card demand-card{% if cartao.demanda.status == 'attended' %} demand-attended{% endif %}">
+      <summary>
+        <span class="pill pill--brand">{{ cartao.demanda.categoryName }}</span>
+        <span class="demand-desc">{{ cartao.demanda.description }}</span>
+        <span class="demand-offer">{{ cartao.demanda.ofertaFormatada() }}</span>
+        <span class="demand-badges">
+          {% if cartao.propostas.size() > 0 %}
+          <span class="pill pill--neutral">{{ cartao.propostas.size() }} proposta(s)</span>
+          {% endif %}
+          {% if cartao.demanda.status == 'attended' %}
+          <span class="pill pill--ok">Atendida</span>
+          {% else %}
+          <span class="pill pill--neutral">Aberta</span>
+          {% endif %}
+        </span>
+      </summary>
+      <div class="demand-detail">
+        <p class="demand-meta">Aberta em {{ cartao.demanda.dataAbertura() }} no bairro {{ cartao.demanda.neighborhoodName }}.</p>
+
+        {% if cartao.propostas.size() == 0 %}
+        <p class="demand-meta">Nenhuma proposta recebida ainda.</p>
+        {% else %}
+        <div class="proposta-lista">
+          {% for item in cartao.propostas %}
+          {% set proposta = item.proposta %}
+          <div class="proposta-item{% if proposta.status == 'accepted' %} proposta-aceita{% endif %}">
+            <div class="proposta-head">
+              <strong>@{{ proposta.providerUsername }}</strong>
+              {% if proposta.providerVerified and item.trilhas.size() > 0 %}
+              {# Selo clicável: abre quais trilhas o prestador concluiu e quando #}
+              <details class="selo-detalhe">
+                <summary aria-label="Ver trilhas concluídas por {{ proposta.providerUsername }}">
+                  <span class="pill pill--ok">{{ iconCheck() }} Selo verificado</span>
+                </summary>
+                <ul class="selo-trilhas">
+                  {% for trilha in item.trilhas %}
+                  <li><strong>{{ trilha.trackTitle }}</strong> — concluída em {{ trilha.dataConclusao() }}</li>
+                  {% endfor %}
+                </ul>
+              </details>
+              {% elseif proposta.providerVerified %}
+              <span class="pill pill--ok">{{ iconCheck() }} Selo verificado</span>
+              {% endif %}
+              <span class="pill {% if proposta.status == 'accepted' %}pill--ok{% else %}pill--neutral{% endif %}">{{ proposta.statusLabel() }}</span>
+            </div>
+            <p class="demand-meta"><strong>{{ proposta.providerJobsDone }}</strong> trabalho(s) realizado(s) no Connecta{% if proposta.providerVerified %} · trilha concluída{% endif %}</p>
+            {% if proposta.message %}
+            <p class="proposta-mensagem">"{{ proposta.message }}"</p>
+            {% endif %}
+
+            {% if proposta.status == 'accepted' %}
+            {# Aceita: contato do prestador liberado para quem abriu a demanda #}
+            <p class="demand-meta"><strong>Contato:</strong>
+              <a class="whatsapp-link" href="https://wa.me/55{{ proposta.providerPhone }}" target="_blank" rel="noopener">{{ proposta.telefoneFormatado() }}</a></p>
+            {# Avaliação: só de quem contratou (dono), uma vez por trabalho #}
+            {% if not cartao.avaliada %}
+            <div class="proposta-acoes">
+              <a class="btn btn-secondary btn-compact" href="/avaliar/demanda/{{ cartao.demanda.id }}">Avaliar serviço de @{{ proposta.providerUsername }}</a>
+              <p class="field-help">Sua nota e comentário aparecem na vitrine para ajudar os vizinhos.</p>
+            </div>
+            {% else %}
+            <p class="demand-meta">Serviço avaliado ✓</p>
+            {% endif %}
+            {% elseif cartao.demanda.status == 'open' %}
+            <div class="proposta-acoes">
+              <form method="post" action="/perfil/demandas/proposta/aceitar">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <input type="hidden" name="id" value="{{ proposta.id }}">
+                <button type="submit" class="btn btn-secondary btn-compact">Aceitar proposta</button>
+              </form>
+              <p class="field-help">Ao aceitar, a demanda é marcada como atendida, o contato dos dois é liberado e as outras propostas são recusadas.</p>
+            </div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if cartao.demanda.status == 'open' %}
+        <div class="demand-actions">
+          <form method="post" action="/perfil/demandas/excluir">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+            <input type="hidden" name="id" value="{{ cartao.demanda.id }}">
+            <button type="submit" class="link-button demand-excluir">Excluir demanda</button>
+          </form>
+        </div>
+        {% endif %}
+      </div>
+    </details>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

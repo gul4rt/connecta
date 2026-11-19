@@ -1,0 +1,179 @@
+{% extends "base" %}
+
+{% block titulo %}Connecta — Vitrine{% endblock %}
+
+{% block conteudo %}
+{% from "components/ui" import iconArrowLeft, iconSend, iconCheck, iconFilter %}
+<p class="back-link"><a href="/">{{ iconArrowLeft() }} Início</a></p>
+
+<h1>Quem faz perto de você</h1>
+<p class="subtitle">No seu bairro: <strong>{{ bairroNome }}</strong></p>
+
+{# Abas: Demandas / Profissionais (decisão do grupo). Links, funciona sem JS. #}
+<div class="tabs" role="tablist">
+  <a class="tab{% if aba == 'demandas' %} is-active{% endif %}" {% if aba == 'demandas' %}aria-current="page"{% endif %} href="/vitrine?aba=demandas">Demandas</a>
+  <a class="tab{% if aba == 'profissionais' %} is-active{% endif %}" {% if aba == 'profissionais' %}aria-current="page"{% endif %} href="/vitrine?aba=profissionais">Profissionais</a>
+</div>
+
+{% if aba == 'demandas' %}
+<div class="section">
+  <div class="vitrine-head">
+    <h2>{% if filtro == 'aceitas' %}Suas propostas aceitas{% else %}Demandas abertas{% endif %}</h2>
+    <a class="btn btn-primary" href="/demandas/nova">Registrar uma demanda</a>
+  </div>
+
+  {% if ehPrestador %}
+  {# Filtros em chips (submenu da aba Demandas), só para quem presta serviço #}
+  <div class="filtro-chips">
+    <a class="filter-chip{% if filtro == 'bairro' %} is-active{% endif %}" href="/vitrine?aba=demandas&amp;filtro=bairro">Meu bairro</a>
+    <a class="filter-chip{% if filtro == 'todos' %} is-active{% endif %}" href="/vitrine?aba=demandas&amp;filtro=todos">Todos os bairros</a>
+    <a class="filter-chip{% if filtro == 'aceitas' %} is-active{% endif %}" href="/vitrine?aba=demandas&amp;filtro=aceitas">Propostas aceitas</a>
+  </div>
+  {% endif %}
+
+  {% if cards.size() == 0 %}
+  <div class="card empty-state">
+    {% if filtro == 'aceitas' %}
+    <p>Você ainda não tem propostas aceitas.</p>
+    <p class="subtitle">Quando um morador aceitar sua proposta, o contato dele aparece aqui.</p>
+    {% else %}
+    <p>Nenhuma demanda aberta {% if filtro == 'todos' %}nos bairros{% else %}no seu bairro{% endif %} ainda.</p>
+    {% endif %}
+  </div>
+  {% else %}
+  <div class="demand-list">
+    {% for cartao in cards %}
+    <details class="card demand-card">
+      <summary>
+        <span class="pill pill--brand">{{ cartao.demanda.categoryName }}</span>
+        <span class="demand-desc">{{ cartao.demanda.description }}</span>
+        <span class="demand-offer">{{ cartao.demanda.ofertaFormatada() }}</span>
+        {% if cartao.minha != null %}
+        <span class="demand-badges">
+          {% if cartao.minha.status == 'accepted' %}
+          <span class="pill pill--ok">Aceita</span>
+          {% elseif cartao.minha.status == 'rejected' %}
+          <span class="pill pill--neutral">Não aceita</span>
+          {% else %}
+          <span class="pill pill--neutral">Proposta enviada</span>
+          {% endif %}
+        </span>
+        {% endif %}
+      </summary>
+      <div class="demand-detail">
+        {% if filtro != 'bairro' %}
+        <p class="demand-meta"><strong>Bairro:</strong> {{ cartao.demanda.neighborhoodName }}</p>
+        {% endif %}
+        <p class="demand-meta"><strong>Aberta por:</strong> @{{ cartao.demanda.ownerUsername }} em {{ cartao.demanda.dataAbertura() }}</p>
+
+        {% if cartao.minha != null and cartao.minha.status == 'accepted' %}
+        {# Proposta aceita: contato do morador liberado para o prestador #}
+        <p class="demand-meta"><strong>Contato liberado:</strong> {{ cartao.demanda.telefoneFormatado() }}
+          <a class="whatsapp-link" href="https://wa.me/55{{ cartao.demanda.contactPhone }}" target="_blank" rel="noopener">Chamar no WhatsApp</a></p>
+        {% elseif filtro == 'aceitas' %}
+          <p class="demand-meta">Sem propostas.</p>
+        {% elseif cartao.minha != null %}
+        <p class="demand-meta">Sua proposta está aguardando o morador. O contato só é liberado se ele aceitar.</p>
+        {% elseif cartao.demanda.residentId != residenteId %}
+        <a class="btn btn-primary btn-compact" href="/demandas/{{ cartao.demanda.id }}/proposta">{{ iconSend() }} Enviar proposta</a>
+        {% else %}
+        <span class="pill pill--ok">Sua demanda</span>
+        {% endif %}
+      </div>
+    </details>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+{% else %}
+{# Aba Profissionais (Fase 4): painel de filtro (escopo + tipos de serviço) #}
+<div class="section">
+  {% set filtrosAtivos = (catsSelecionadas.size() > 0 ? 1 : 0) + (onde == 'todos' ? 1 : 0) %}
+  <details class="filtro-painel"{% if catsSelecionadas.size() > 0 or onde == 'todos' %} open{% endif %}>
+    <summary>
+      {{ iconFilter() }} Filtrar
+      {% if filtrosAtivos > 0 %}<span class="pill pill--brand">{{ filtrosAtivos }}</span>{% endif %}
+    </summary>
+    <form method="get" action="/vitrine" class="filtro-form">
+      <input type="hidden" name="aba" value="profissionais">
+      <fieldset>
+        <legend>Onde buscar</legend>
+        <label><input type="radio" name="onde" value="bairro"{% if onde != 'todos' %} checked{% endif %}> Meu bairro</label>
+        <label><input type="radio" name="onde" value="todos"{% if onde == 'todos' %} checked{% endif %}> Todos os bairros</label>
+      </fieldset>
+      <fieldset>
+        <legend>Tipo de serviço</legend>
+        {% for c in todasCategorias %}
+        <label><input type="checkbox" name="cats" value="{{ c.slug }}"{% if catsSelecionadas contains c.slug %} checked{% endif %}> {{ c.name }}</label>
+        {% endfor %}
+      </fieldset>
+      <div class="filtro-acoes">
+        <button type="submit" class="btn btn-primary btn-compact">Aplicar filtro</button>
+        <a href="/vitrine?aba=profissionais" class="link-button">Limpar</a>
+      </div>
+    </form>
+  </details>
+
+  {% if prestadores.size() == 0 %}
+  <div class="card empty-state">
+    {% if catsSelecionadas.size() == 0 %}
+    <p>Nenhum profissional cadastrado {% if onde == 'todos' %}ainda{% else %}no seu bairro ainda{% endif %}.</p>
+    <p class="subtitle">Quem se capacita e conclui uma trilha aparece aqui.</p>
+    {% else %}
+    <p>Nenhum profissional dos tipos marcados {% if onde == 'todos' %}ainda{% else %}no seu bairro ainda{% endif %}.</p>
+    {% endif %}
+  </div>
+  {% else %}
+  <div class="provider-grid">
+    {% for p in prestadores %}
+    {% set avaliacoesDoPrestador = avaliacoes[p.providerId] %}
+    <div class="card provider-card">
+      <div class="provider-head">
+        <span class="avatar" aria-hidden="true">{{ p.inicial() }}</span>
+        <div>
+          <div class="provider-name">{{ p.displayName }}</div>
+          <div class="provider-sub">{{ p.oficioTexto() }}</div>
+        </div>
+      </div>
+      {% if p.verified %}
+      <span class="pill pill--ok">{{ iconCheck() }} Selo verificado</span>
+      {% endif %}
+      {% if p.notaTexto() != null %}
+      <p class="provider-rating" aria-label="Nota média dos clientes">{{ p.notaTexto() }}</p>
+      {% endif %}
+      <p class="demand-meta"><strong>{{ p.jobsDone }}</strong> trabalho(s) realizado(s) no Connecta</p>
+
+      {% if avaliacoesDoPrestador.size() > 0 %}
+      {# Comentários das avaliações: clicável, sem JavaScript #}
+      <details class="review-details">
+        <summary>Ver avaliações ({{ avaliacoesDoPrestador.size() }})</summary>
+        <ul class="review-list">
+          {% for avaliacao in avaliacoesDoPrestador %}
+          <li>
+            <span class="review-note">★ {{ avaliacao.rating }}</span>
+            {% if avaliacao.comment %}
+            <span class="review-comment">"{{ avaliacao.comment }}"</span>
+            {% endif %}
+            <span class="review-meta">{{ avaliacao.reviewerName }} · {{ avaliacao.dataAvaliacao() }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </details>
+      {% endif %}
+
+      {% if p.providerId != residenteId %}
+      <form method="post" action="/prestadores/{{ p.providerId }}/pedidos">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <button type="submit" class="btn btn-secondary btn-compact">Chamar para um serviço</button>
+      </form>
+      {% else %}
+      <span class="pill pill--neutral">Este é o seu card</span>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

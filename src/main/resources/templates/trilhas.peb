@@ -1,0 +1,48 @@
+{% extends "base" %}
+
+{% block titulo %}Connecta — Trilhas{% endblock %}
+
+{% block conteudo %}
+{% from "components/ui" import iconArrowLeft, verifiedPill %}
+<p class="back-link"><a href="/">{{ iconArrowLeft() }} Início</a></p>
+<div class="page-head">
+  <h1>Trilhas para você</h1>
+  <p class="subtitle">Cursos gratuitos, em vídeos, organizados em etapas. Conclua a trilha e ganhe o selo verificado.</p>
+</div>
+
+{% if temSelo %}
+<div class="card selo-banner">
+  {{ verifiedPill() }}
+  <span>Você já concluiu uma trilha. O selo aparece no seu perfil e na vitrine.</span>
+</div>
+{% endif %}
+
+<div class="track-list">
+  {% for t in trilhas %}
+  <div class="card track-card">
+    <div class="track-head">
+      <div>
+        <h2 class="track-title"><a href="/trilhas/{{ t.track.slug }}">{{ t.track.title }}</a></h2>
+        <p class="track-meta">{{ t.track.categoryName }} · Curso gratuito</p>
+      </div>
+      {% if t.completed %}{{ verifiedPill() }}{% endif %}
+    </div>
+    <p class="track-desc">{{ t.track.description }}</p>
+
+    {% if t.enrolled %}
+    <p class="track-progress">
+      {% if t.completed %}
+      <strong>Trilha concluída.</strong> Você ganhou o selo verificado.
+      {% else %}
+      <strong>{{ t.progressoTexto }}</strong>.
+      {% endif %}
+    </p>
+    {% endif %}
+
+    <a class="btn btn-secondary btn-compact" href="/trilhas/{{ t.track.slug }}">
+      {% if t.completed %}Revisar trilha{% elseif t.enrolled %}Continuar trilha{% else %}Ver trilha{% endif %}
+    </a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

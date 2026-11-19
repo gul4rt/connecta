@@ -1,0 +1,111 @@
+{#- Página do design system, SOMENTE em desenvolvimento (CONNECTA_ENV != prod).
+    Serve para revisar todos os componentes em um lugar só. -#}
+{% extends "base" %}
+
+{% block titulo %}Connecta — Design system{% endblock %}
+
+{% block conteudo %}
+{% from "components/ui" import wordmark, neighborhoodChip, iconCheck, iconArrowLeft, iconLock, demandPill, verifiedPill, listLine, buttonPrimary, buttonSecondary, choiceButton, stepper, avatar, providerCard %}
+<div class="page-head">
+  <h1>Design system</h1>
+  <p class="subtitle">Página de desenvolvimento: todos os componentes do Connecta em um lugar. Não vai para produção.</p>
+</div>
+
+<section class="section">
+  <h2>Identidade</h2>
+  <div class="card" style="margin-top:12px; display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+    {{ wordmark() }}
+    {{ avatar('M') }}
+    {{ iconCheck() }} {{ iconArrowLeft() }} {{ iconLock() }}
+  </div>
+</section>
+
+<section class="section">
+  <h2>Cores</h2>
+  <div class="card" style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap;">
+    <span class="pill pill--brand">--brand-tint</span>
+    <span class="pill pill--neutral">--neutral-tint</span>
+    <span class="pill pill--ok">{{ iconCheck() }} --ok-tint</span>
+    <span style="width:52px;height:52px;border-radius:50%;background:var(--brand);" title="brand"></span>
+    <span style="width:52px;height:52px;border-radius:50%;background:var(--ink);" title="ink"></span>
+    <span style="width:52px;height:52px;border-radius:50%;background:var(--paper);border:1px solid var(--line);" title="paper"></span>
+    <span style="width:52px;height:52px;border-radius:50%;background:var(--line);" title="line"></span>
+    <span style="width:52px;height:52px;border-radius:50%;background:var(--avatar-bg);" title="avatar-bg"></span>
+  </div>
+  <p class="note">Modo escuro: use o controle "Modo escuro" no rodapé da página para ver como estes componentes mudam.</p>
+</section>
+
+<section class="section">
+  <h2>Chip de bairro</h2>
+  <div class="card" style="margin-top:12px;">
+    {{ neighborhoodChip('[Seu bairro]') }}
+  </div>
+</section>
+
+<section class="section">
+  <h2>Botões</h2>
+  <div class="card" style="margin-top:12px; display:flex; flex-direction:column; gap:12px; align-items:flex-start;">
+    {{ buttonPrimary('Quero fazer esta trilha', '#') }}
+    {{ buttonSecondary('Chamar para um serviço', '#') }}
+  </div>
+</section>
+
+<section class="section">
+  <h2>Botões de escolha (home)</h2>
+  <div class="choices" style="margin-top:12px;">
+    {{ choiceButton('Quero aprender e trabalhar', 'Cursos grátis para você ser encontrado pelos vizinhos', '#', 'filled') }}
+    {{ choiceButton('Preciso de um serviço', 'Ache quem faz perto da sua casa', '#', 'outlined') }}
+  </div>
+</section>
+
+<section class="section">
+  <h2>Pills</h2>
+  <div class="card" style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap;">
+    {{ demandPill('Muita procura') }}
+    {{ demandPill('Procura média') }}
+    {{ demandPill('Pouca procura') }}
+    {{ verifiedPill() }}
+  </div>
+</section>
+
+<section class="section">
+  <h2>Linha de lista</h2>
+  <div class="card" style="margin-top:12px;">
+    {% for item in procura %}
+      {{ listLine(item.categoryName, item.demandLabel()) }}
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section">
+  <h2>Passos ("Seu caminho")</h2>
+  <div class="card" style="margin-top:12px;">
+    {% set passos = [
+      { 'estado': 'done', 'texto': 'Contei o que sei fazer' },
+      { 'estado': 'current', 'texto': 'Fazer a trilha' },
+      { 'estado': 'pending', 'texto': 'Ganhar o selo e ser encontrado' }
+    ] %}
+    {{ stepper(passos) }}
+  </div>
+</section>
+
+<section class="section">
+  <h2>Chips de filtro</h2>
+  <div class="filter-chips" style="margin-top:12px;">
+    <a class="filter-chip is-active" href="#">Manutenção</a>
+    <a class="filter-chip" href="#">Cuidados</a>
+    <a class="filter-chip" href="#">Tecnologia</a>
+    <a class="filter-chip" href="#">Gastronomia</a>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Card de prestador (vitrine)</h2>
+  <p class="note">Dados fictícios, só para mostrar o componente.</p>
+  <div style="display:grid; gap:16px; margin-top:12px;">
+    {{ providerCard('Maria E. (exemplo)', 'Eletricista', 'M') }}
+    {{ providerCard('João S. (exemplo)', 'Marceneiro', 'J') }}
+  </div>
+  <p class="note">{{ iconLock() }} O telefone só aparece depois que a pessoa aceitar o seu pedido.</p>
+</section>
+{% endblock %}

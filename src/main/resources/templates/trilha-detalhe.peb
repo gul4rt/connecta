@@ -1,0 +1,111 @@
+{% extends "base" %}
+
+{% block titulo %}Connecta — {{ trilha.track.title }}{% endblock %}
+
+{% block conteudo %}
+{% from "components/ui" import iconArrowLeft, iconCheck, verifiedPill %}
+<p class="back-link"><a href="/trilhas">{{ iconArrowLeft() }} Trilhas</a></p>
+<div class="page-head">
+  <h1>{{ trilha.track.title }}</h1>
+  <p class="subtitle">{{ trilha.track.categoryName }} · Curso gratuito</p>
+  <p class="track-desc">{{ trilha.track.description }}</p>
+</div>
+
+{# Mensagens de erro da conclusão (vêm por querystring, funciona sem JS) #}
+{% if erros %}
+<div class="form-errors" role="alert">
+  <span>{{ erros }}</span>
+</div>
+{% endif %}
+
+{% if not logado %}
+  {# Visitante sem conta: vê a trilha, mas as ações pedem cadastro #}
+  <div class="card termo">
+    <p>Entre na sua conta para começar esta trilha e acompanhar o seu progresso.</p>
+    <a class="btn btn-primary" href="/entrar">Entrar para começar</a>
+  </div>
+{% elseif not trilha.inscrita %}
+  {# Ainda não começou: botão de inscrição (decisão: inscrição explícita) #}
+  <div class="card termo">
+    <p>Ao começar, o seu progresso fica salvo aqui. Ao concluir todas as etapas, você ganha o selo verificado.</p>
+    <form method="post" action="/trilhas/{{ trilha.track.slug }}/inscrever">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      <button type="submit" class="btn btn-primary">Quero fazer esta trilha</button>
+    </form>
+  </div>
+{% endif %}
+
+{% if not trilha.concluida %}
+<h2 class="section">{% if trilha.inscrita %}Suas etapas{% else %}Etapas da trilha{% endif %}</h2>
+<ol class="timeline">
+  {% for item in etapas %}
+  <li class="timeline-step step--{{ item.estado }}">
+    <span class="step-dot" aria-hidden="true">
+      {% if item.estado == 'done' %}{{ iconCheck() }}{% else %}{{ loop.index }}{% endif %}
+    </span>
+    <div class="step-body card">
+      <h3 class="step-title">{{ item.etapa.title }}</h3>
+      <ul class="playlist-links">
+        {% for url in item.etapa.playlistUrls %}
+        <li><a href="{{ url }}" target="_blank" rel="noopener">Abrir a playlist no YouTube</a></li>
+        {% endfor %}
+      </ul>
+      {% if trilha.inscrita %}
+        {% if item.estado != 'done' %}
+        <form method="post" action="/trilhas/{{ trilha.track.slug }}/etapas">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <input type="hidden" name="etapa" value="{{ item.etapa.id }}">
+          <button type="submit" class="btn btn-secondary btn-compact">Marcar como concluída</button>
+        </form>
+        {% else %}
+        <p class="step-done-note">Etapa concluída ✓</p>
+        {% endif %}
+      {% endif %}
+    </div>
+  </li>
+  {% endfor %}
+</ol>
+
+{% if trilha.inscrita and trilha.todasConcluidas %}
+  {# Todas as etapas feitas: autodeclaração com termo (decisão do grupo, 2026-11-19) #}
+  <div class="card termo">
+    <h2>Concluir a trilha</h2>
+    <form method="post" action="/trilhas/{{ trilha.track.slug }}/concluir" class="consent">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      <label>
+        <input type="checkbox" name="termo" value="sim" required>
+        <span>Confirmo que realizei os treinamentos desta trilha. Esta declaração fica registrada com data e hora.</span>
+      </label>
+      <button type="submit" class="btn btn-primary">Concluir trilha e receber o selo</button>
+    </form>
+  </div>
+{% endif %}
+{% endif %}
+
+{% if trilha.concluida %}
+<div class="card selo-banner">
+  {{ verifiedPill() }}
+  <span>
+    <strong>Trilha concluída em {{ trilha.dataConclusao }}.</strong>
+    O selo verificado já aparece no seu perfil.
+  </span>
+</div>
+
+<h2 class="section">Etapas desta trilha</h2>
+<ol class="timeline">
+  {% for item in etapas %}
+  <li class="timeline-step step--done">
+    <span class="step-dot" aria-hidden="true">{{ iconCheck() }}</span>
+    <div class="step-body card">
+      <h3 class="step-title">{{ item.etapa.title }}</h3>
+      <ul class="playlist-links">
+        {% for url in item.etapa.playlistUrls %}
+        <li><a href="{{ url }}" target="_blank" rel="noopener">Abrir a playlist no YouTube</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </li>
+  {% endfor %}
+</ol>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "base" %}
+
+{% block titulo %}Connecta — Pedidos de serviço{% endblock %}
+
+{% block conteudo %}
+{% from "components/ui" import iconArrowLeft, iconCheck %}
+<div class="form-page">
+  <p class="back-link"><a href="/perfil">{{ iconArrowLeft() }} Voltar para o perfil</a></p>
+  <h1>Pedidos de serviço</h1>
+  <p class="subtitle">Chamados diretos entre moradores e prestadores do bairro. O telefone só aparece depois do aceite.</p>
+
+  {% if aviso == 'enviado' %}
+  <div class="card selo-banner"><span>Pedido enviado. Quando o prestador aceitar, o contato dele aparece aqui embaixo.</span></div>
+  {% elseif aviso == 'repetido' %}
+  <div class="card selo-banner"><span>Você já tem um pedido aguardando resposta desse prestador.</span></div>
+  {% elseif aviso == 'erro' %}
+  <div class="form-errors" role="alert"><span>Não foi possível enviar o pedido. O prestador pode não estar mais disponível.</span></div>
+  {% endif %}
+
+  {% if avaliadoAgora %}
+  <div class="card selo-banner"><span>Avaliação enviada. Obrigado por ajudar o bairro a escolher com confiança.</span></div>
+  {% endif %}
+
+  {# ---------- Pedidos que VOCÊ RECEBEU (só para prestadores) ---------- #}
+  {% if ehPrestador %}
+  <h2 class="section">Pedidos que você recebeu</h2>
+  {% if recebidos.size() == 0 %}
+  <p class="demand-meta">Nenhum pedido recebido ainda. Concluir trilhas e ter boas avaliações ajuda a ser chamado.</p>
+  {% else %}
+  <div class="proposta-lista">
+    {% for pedido in recebidos %}
+    <div class="proposta-item{% if pedido.status == 'accepted' %} proposta-aceita{% endif %}">
+      <div class="proposta-head">
+        <strong>{{ pedido.requesterName }}</strong>
+        <span class="pill {% if pedido.status == 'accepted' %}pill--ok{% elseif pedido.status == 'rejected' %}pill--neutral{% else %}pill--brand{% endif %}">{{ pedido.statusLabel() }}</span>
+        <span class="demand-meta">{{ pedido.dataAbertura() }}</span>
+      </div>
+      {% if pedido.message %}
+      <p class="proposta-mensagem">"{{ pedido.message }}"</p>
+      {% endif %}
+      {% if pedido.status == 'pending' %}
+      <div class="proposta-acoes">
+        <form method="post" action="/perfil/pedidos/aceitar">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <input type="hidden" name="id" value="{{ pedido.id }}">
+          <button type="submit" class="btn btn-primary btn-compact">Aceitar pedido</button>
+        </form>
+        <form method="post" action="/perfil/pedidos/recusar">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <input type="hidden" name="id" value="{{ pedido.id }}">
+          <button type="submit" class="link-button demand-excluir">Recusar</button>
+        </form>
+        <p class="field-help">Ao aceitar, quem pediu vê o seu telefone para combinar o serviço.</p>
+      </div>
+      {% elseif pedido.status == 'accepted' %}
+      <p class="demand-meta">Você aceitou. {{ pedido.requesterName }} recebeu o seu telefone.</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endif %}
+
+  {# ---------- Pedidos que VOCÊ ENVIOU ---------- #}
+  <h2 class="section">Pedidos que você enviou</h2>
+  {% if enviados.size() == 0 %}
+  <p class="demand-meta">Você não chamou nenhum prestador ainda. Veja quem faz perto de você na <a href="/vitrine?aba=profissionais">vitrine</a>.</p>
+  {% else %}
+  <div class="proposta-lista">
+    {% for item in enviados %}
+    {% set pedido = item.pedido %}
+    <div class="proposta-item{% if pedido.status == 'accepted' %} proposta-aceita{% endif %}">
+      <div class="proposta-head">
+        <strong>{{ pedido.providerName }}</strong>
+        <span class="pill {% if pedido.status == 'accepted' %}pill--ok{% elseif pedido.status == 'rejected' %}pill--neutral{% else %}pill--brand{% endif %}">{{ pedido.statusLabel() }}</span>
+        <span class="demand-meta">{{ pedido.dataAbertura() }}</span>
+      </div>
+      {% if pedido.status == 'accepted' %}
+      {# Aceito: regra de privacidade satisfeita, contato liberado #}
+      <p class="demand-meta"><strong>Contato:</strong>
+        <a class="whatsapp-link" href="https://wa.me/55{{ pedido.providerPhone }}" target="_blank" rel="noopener">{{ pedido.telefoneFormatado() }}</a></p>
+      {% if not item.avaliado %}
+      <div class="proposta-acoes">
+        <a class="btn btn-secondary btn-compact" href="/avaliar/pedido/{{ pedido.id }}">Avaliar serviço de {{ pedido.providerName }}</a>
+        <p class="field-help">Sua nota e comentário aparecem na vitrine para ajudar os vizinhos.</p>
+      </div>
+      {% else %}
+      <p class="demand-meta">Serviço avaliado ✓</p>
+      {% endif %}
+      {% elseif pedido.status == 'pending' %}
+      <p class="demand-meta">Aguardando o prestador responder. O telefone dele só aparece se ele aceitar.</p>
+      {% else %}
+      <p class="demand-meta">O prestador não pode atender este pedido.</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

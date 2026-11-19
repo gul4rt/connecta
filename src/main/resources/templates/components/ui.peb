@@ -1,0 +1,106 @@
+{#- Macros dos componentes do design system (seção 7.5 do CLAUDE.md).
+    Uso nos templates: {% import "components/ui" as ui %} -#}
+
+{#-- Wordmark --#}
+{% macro wordmark() -%}
+<a class="wordmark" href="/">Connecta</a>
+{%- endmacro %}
+
+{#-- Chip de bairro (placeholder até definirmos o território-piloto) --#}
+{% macro neighborhoodChip(label) -%}
+<button type="button" class="neighborhood-chip">{{ label }}</button>
+{%- endmacro %}
+
+{#-- Ícones SVG inline, traço 2-3px, currentColor, só decorativos --#}
+{% macro iconCheck() -%}
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+{%- endmacro %}
+
+{% macro iconArrowLeft() -%}
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10.5 3.5L6 8l4.5 4.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+{%- endmacro %}
+
+{% macro iconLock() -%}
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3.5" y="7" width="9" height="6.5" rx="2" stroke="currentColor" stroke-width="2"/><path d="M5.5 7V5.5a2.5 2.5 0 015 0V7" stroke="currentColor" stroke-width="2"/></svg>
+{%- endmacro %}
+
+{#-- Aviãozinho de papel (enviar proposta) --#}
+{% macro iconSend() -%}
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 22-7z"/></svg>
+{%- endmacro %}
+
+{#-- Funil (abrir filtros) --#}
+{% macro iconFilter() -%}
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 4H2l8 9v6l4 2v-8l8-9z"/></svg>
+{%- endmacro %}
+
+{#-- Pill de procura: "Muita procura" usa o destaque terracota --#}
+{% macro demandPill(rotulo) -%}
+{% if rotulo == 'Muita procura' %}
+<span class="pill pill--brand">{{ rotulo }}</span>
+{% else %}
+<span class="pill pill--neutral">{{ rotulo }}</span>
+{% endif %}
+{%- endmacro %}
+
+{#-- Pill verde com check (selo verificado) --#}
+{% macro verifiedPill() -%}
+<span class="pill pill--ok">{{ _self.iconCheck() }} Selo verificado</span>
+{%- endmacro %}
+
+{#-- Linha de lista: categoria à esquerda, pill à direita --#}
+{% macro listLine(nome, rotulo) -%}
+<div class="list-line">
+  <span>{{ nome }}</span>
+  {{ _self.demandPill(rotulo) }}
+</div>
+{%- endmacro %}
+
+{#-- Botões --#}
+{% macro buttonPrimary(texto, href) -%}
+<a class="btn btn-primary" href="{{ href }}">{{ texto }}</a>
+{%- endmacro %}
+
+{% macro buttonSecondary(texto, href) -%}
+<a class="btn btn-secondary" href="{{ href }}">{{ texto }}</a>
+{%- endmacro %}
+
+{#-- Botão de escolha grande: variante "filled" (terracota) ou "outlined" --#}
+{% macro choiceButton(titulo, apoio, href, variante) -%}
+<a class="choice choice--{{ variante }}" href="{{ href }}">
+  <span class="choice-title">{{ titulo }}</span>
+  <span class="choice-subtitle">{{ apoio }}</span>
+</a>
+{%- endmacro %}
+
+{#-- Stepper vertical: passos = lista de {estado: done|current|pending, texto} --#}
+{% macro stepper(passos) -%}
+<ol class="stepper">
+  {% for passo in passos %}
+  <li class="step step--{{ passo.estado }}">
+    <span class="step-dot" aria-hidden="true">{% if passo.estado == 'done' %}{{ _self.iconCheck() }}{% else %}{{ loop.index }}{% endif %}</span>
+    <span>{{ passo.texto }}</span>
+  </li>
+  {% endfor %}
+</ol>
+{%- endmacro %}
+
+{#-- Avatar com inicial --#}
+{% macro avatar(inicial) -%}
+<span class="avatar" aria-hidden="true">{{ inicial }}</span>
+{%- endmacro %}
+
+{#-- Card de prestador (vitrine) --#}
+{% macro providerCard(nome, oficio, inicial) -%}
+<div class="card provider-card">
+  <div class="provider-head">
+    {{ _self.avatar(inicial) }}
+    <div>
+      <div class="provider-name">{{ nome }}</div>
+      <div class="provider-sub">{{ oficio }} · mora no seu bairro</div>
+    </div>
+  </div>
+  {{ _self.verifiedPill() }}
+  {{ _self.buttonSecondary('Chamar para um serviço', '#') }}
+</div>
+{%- endmacro %}

@@ -1,0 +1,101 @@
+{#- Estrutura comum de todas as telas: cabeçalho, conteúdo, rodapé e navegação.
+    Barra inferior no mobile, barra superior no desktop (seção 7.7).
+    ATENÇÃO: este template NÃO importa macros. No Pebble, macros importadas no
+    pai conflitam com as importações dos templates filhos; aqui usamos só HTML.
+    Os componentes (macros) ficam em templates/components/ui.peb. -#}
+<!doctype html>
+<html lang="pt-BR"{% if temaEscuro %} data-theme="dark"{% endif %}>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Connecta{% endblock %}</title>
+  <meta name="description" content="Connecta conecta capacitação, demanda e oferta de serviços no mesmo bairro.">
+  <link rel="stylesheet" href="/static/css/tokens.css">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/components.css">
+  <script src="/static/js/entrada.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="wordmark" href="/">Connecta</a>
+      <nav class="top-nav" aria-label="Navegação principal">
+        <a class="nav-link{% if pagina == 'inicio' %} is-active{% endif %}" {% if pagina == 'inicio' %}aria-current="page"{% endif %} href="/">Início</a>
+        <a class="nav-link{% if pagina == 'trilhas' %} is-active{% endif %}" {% if pagina == 'trilhas' %}aria-current="page"{% endif %} href="/trilhas">Trilhas</a>
+        <a class="nav-link{% if pagina == 'vitrine' %} is-active{% endif %}" {% if pagina == 'vitrine' %}aria-current="page"{% endif %} href="/vitrine">Vitrine</a>
+        <a class="nav-link{% if pagina == 'perfil' %} is-active{% endif %}" {% if pagina == 'perfil' %}aria-current="page"{% endif %} href="/perfil">Perfil</a>
+      </nav>
+      <div class="header-actions">
+        {# O chip de bairro só aparece quando já há bairro no perfil #}
+        {% if usuarioBairro %}
+        <button type="button" class="neighborhood-chip">{{ usuarioBairro }}</button>
+        {% endif %}
+
+        {# Tema: lua no modo claro (vai para o escuro), sol no modo escuro. É um link, funciona sem JS. #}
+        {% if temaEscuro %}
+        <a class="icon-button" href="/preferencias?tema=claro&amp;para={{ caminho }}" aria-label="Mudar para o modo claro">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </a>
+        {% else %}
+        <a class="icon-button" href="/preferencias?tema=escuro&amp;para={{ caminho }}" aria-label="Mudar para o modo escuro">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </a>
+        {% endif %}
+
+        {% if logado %}
+        <a class="header-user" href="/perfil" title="Editar perfil">{% if usuarioNome %}{{ usuarioNome }}{% else %}{{ usuarioUsername }}{% endif %}</a>
+        <form method="post" action="/logout" class="logout-form">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <button type="submit" class="link-button">Sair</button>
+        </form>
+        {% else %}
+        {# Sem JS vai para a página /entrar; com JS abre o popup abaixo #}
+        <a class="btn btn-secondary btn-compact" href="/entrar" data-abrir-entrada>Entrar</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="container">
+    {% block conteudo %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="note">Connecta — o que você sabe fazer vira renda no seu bairro.</p>
+    </div>
+  </footer>
+
+  <nav class="bottom-nav" aria-label="Navegação principal">
+    <a class="nav-link{% if pagina == 'inicio' %} is-active{% endif %}" {% if pagina == 'inicio' %}aria-current="page"{% endif %} href="/">Início</a>
+    <a class="nav-link{% if pagina == 'trilhas' %} is-active{% endif %}" {% if pagina == 'trilhas' %}aria-current="page"{% endif %} href="/trilhas">Trilhas</a>
+    <a class="nav-link{% if pagina == 'vitrine' %} is-active{% endif %}" {% if pagina == 'vitrine' %}aria-current="page"{% endif %} href="/vitrine">Vitrine</a>
+    <a class="nav-link{% if pagina == 'perfil' %} is-active{% endif %}" {% if pagina == 'perfil' %}aria-current="page"{% endif %} href="/perfil">Perfil</a>
+  </nav>
+
+  {% if not logado %}
+  {# Popup de entrada: a mesma tela /entrar, aberta em <dialog> quando há JS #}
+  <dialog id="dialog-entrada" class="modal" aria-labelledby="titulo-entrada">
+    <div class="modal-head">
+      <strong id="titulo-entrada" class="modal-title">Entrar no Connecta</strong>
+      <button type="button" class="icon-button modal-fechar" data-fechar-entrada aria-label="Fechar">&times;</button>
+    </div>
+    <form method="post" action="/login" class="form">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      <div class="form-field">
+        <label for="modal-username">Username</label>
+        <input type="text" id="modal-username" name="username" autocomplete="username" required maxlength="40">
+      </div>
+      <div class="form-field">
+        <label for="modal-senha">Senha</label>
+        <input type="password" id="modal-senha" name="senha" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Entrar</button>
+    </form>
+    <p class="modal-alt">Não tem conta? <a href="/cadastro">Criar conta</a> · <a href="/recuperar">Esqueci minha senha</a></p>
+  </dialog>
+  {% endif %}
+</body>
+</html>

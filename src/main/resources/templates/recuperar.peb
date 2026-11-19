@@ -1,0 +1,46 @@
+{% extends "base" %}
+
+{% block titulo %}Connecta — Recuperar senha{% endblock %}
+
+{% block conteudo %}
+<div class="form-page">
+  <h1>Recuperar senha</h1>
+  <p class="subtitle">Use o código de recuperação que apareceu quando você criou a sua conta.</p>
+
+  {% if erros.size() > 0 %}
+  <div class="form-errors" role="alert">
+    {% for erro in erros %}<p>{{ erro }}</p>{% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post" action="/recuperar" class="form card">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+    <div class="form-field">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" autocomplete="username" required maxlength="40">
+    </div>
+
+    <div class="form-field">
+      <label for="codigo">Código de recuperação</label>
+      <input type="text" id="codigo" name="codigo" required maxlength="9" placeholder="XXXX-XXXX"
+             autocomplete="off" class="recovery-input">
+    </div>
+
+    <div class="form-field">
+      <label for="senha">Nova senha</label>
+      <input type="password" id="senha" name="senha" autocomplete="new-password" required minlength="8">
+      <p class="field-help">Pelo menos 8 caracteres. Ao trocar a senha, um código de recuperação NOVO é gerado.</p>
+    </div>
+
+    <div class="form-field">
+      <label for="confirmacao">Confirmar nova senha</label>
+      <input type="password" id="confirmacao" name="confirmacao" autocomplete="new-password" required minlength="8">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Trocar senha</button>
+  </form>
+
+  <p class="form-alt">Lembrou a senha? <a href="/entrar">Entrar</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base" %}
+
+{% block titulo %}Connecta — Entrar{% endblock %}
+
+{% block conteudo %}
+<div class="form-page">
+  <h1>Entrar</h1>
+  <p class="subtitle">Use o seu username e a sua senha para acessar a plataforma.</p>
+
+  {% if erros.size() > 0 %}
+  <div class="form-errors" role="alert">
+    {% for erro in erros %}<p>{{ erro }}</p>{% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post" action="/login" class="form card">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    <div class="form-field">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" value="{{ username }}" autocomplete="username" required maxlength="40">
+    </div>
+    <div class="form-field">
+      <label for="senha">Senha</label>
+      <input type="password" id="senha" name="senha" autocomplete="current-password" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Entrar</button>
+  </form>
+
+  <p class="form-alt">Não tem conta? <a href="/cadastro">Criar conta</a> · <a href="/recuperar">Esqueci minha senha</a></p>
+</div>
+{% endblock %}

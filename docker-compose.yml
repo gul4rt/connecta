@@ -1,0 +1,44 @@
+# Subir o projeto completo só com Docker (sem instalar Java/Maven):
+#   docker compose up -d --build
+# O app compila dentro do Docker (multi-stage) e se conecta ao banco pelo
+# hostname interno "db" — nada é compilado na máquina de quem roda.
+#
+# Modo demonstração (recria o banco com dados fictícios e sobe):
+#   docker compose down          # para o app
+#   docker compose run --rm app demo
+services:
+  db:
+    image: postgres:17.4-alpine
+    container_name: connecta-db
+    environment:
+      POSTGRES_USER: connecta
+      POSTGRES_PASSWORD: connecta
+      POSTGRES_DB: connecta
+    ports:
+      - "5432:5432"
+    volumes:
+      - connecta-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U connecta"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    container_name: connecta-app
+    ports:
+      - "7000:7000"
+    environment:
+      # dentro da rede do compose, o banco é o host "db" (não localhost)
+      DB_URL: jdbc:postgresql://db:5432/connecta
+      DB_USER: connecta
+      DB_PASSWORD: connecta
+      PORT: 7000
+      CONNECTA_ENV: dev
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  connecta-pgdata:

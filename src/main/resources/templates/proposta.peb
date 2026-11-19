@@ -1,0 +1,43 @@
+{% extends "base" %}
+
+{% block titulo %}Connecta — Enviar proposta{% endblock %}
+
+{% block conteudo %}
+{% from "components/ui" import iconArrowLeft, iconSend %}
+<div class="form-page">
+  <p class="back-link"><a href="/vitrine">{{ iconArrowLeft() }} Voltar para a vitrine</a></p>
+  <h1>Enviar proposta</h1>
+
+  {# Resumo da demanda #}
+  <div class="card demanda-resumo">
+    <span class="pill pill--brand">{{ demanda.categoryName }}</span>
+    <p class="demand-desc">{{ demanda.description }}</p>
+    <p class="demand-meta"><strong>Oferta:</strong> {{ demanda.ofertaFormatada() }} · <strong>Bairro:</strong> {{ demanda.neighborhoodName }}</p>
+    <p class="demand-meta"><strong>Aberta por:</strong> @{{ demanda.ownerUsername }} em {{ demanda.dataAbertura() }}</p>
+  </div>
+
+  <p class="portfolio-badge">{{ iconSend() }} Trabalhos realizados: <strong>{{ trabalhos }}</strong></p>
+
+  {% if erros.size() > 0 %}
+  <div class="form-errors" role="alert">
+    {% for erro in erros %}<p>{{ erro }}</p>{% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post" action="/demandas/proposta" class="form card">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    <input type="hidden" name="id" value="{{ demanda.id }}">
+
+    <div class="form-field">
+      <label for="mensagem">Fale sobre a sua proposta (opcional)</label>
+      <textarea id="mensagem" name="mensagem" rows="4" maxlength="500"
+                placeholder="Ex.: faço esse tipo de serviço há 5 anos, moro perto e posso passar hoje.">{{ mensagem }}</textarea>
+      <p class="field-help">A mensagem é opcional, mas ajuda o morador a escolher você. Até 500 caracteres.</p>
+    </div>
+
+    <button type="submit" class="btn btn-primary">{{ iconSend() }} Enviar proposta</button>
+  </form>
+
+  <p class="note">Se o morador aceitar, o contato dele é liberado para você — e o seu para ele.</p>
+</div>
+{% endblock %}

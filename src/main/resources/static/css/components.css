@@ -1,0 +1,1265 @@
+/* ============================================================
+   components.css — componentes do design system (seção 7.5).
+   Os equivalentes em Pebble ficam em templates/components/ui.peb.
+   ============================================================ */
+
+/* ---------- Wordmark ---------- */
+.wordmark {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 1.25rem;      /* 20px */
+  color: var(--brand);
+  text-decoration: none;
+}
+
+/* ---------- Chip de bairro ---------- */
+.neighborhood-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: var(--border-width) solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font-size: 0.875rem;     /* 14px */
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* ---------- Botões ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: var(--radius-button);
+}
+
+/* Botão primário: terracota, texto branco, 17px/600, altura mín. 52px */
+.btn-primary {
+  background: var(--brand);
+  color: #FFFFFF;
+  border: var(--border-width) solid var(--brand);
+  min-height: 52px;
+  font-size: 1.0625rem;
+  padding: 12px 24px;
+  width: 100%;
+}
+.btn-primary:hover {
+  background: color-mix(in srgb, var(--brand) 90%, #000000);
+  border-color: color-mix(in srgb, var(--brand) 90%, #000000);
+}
+
+/* Botão secundário: transparente, borda 2px, altura mín. 48px */
+.btn-secondary {
+  background: transparent;
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  min-height: 48px;
+  font-size: 1rem;
+  padding: 10px 20px;
+}
+.btn-secondary:hover {
+  background: var(--neutral-tint);
+}
+
+/* ---------- Botões de escolha grandes (home) ---------- */
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.choice {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  min-height: 100px;
+  padding: 16px 20px;
+  border-radius: var(--radius-choice);
+  text-decoration: none;
+}
+.choice-title {
+  font-family: var(--font-title);
+  font-size: 1.375rem;     /* 22px */
+  font-weight: 700;
+  line-height: 1.1;
+}
+.choice-subtitle {
+  font-size: 0.9375rem;
+}
+
+/* Variante cheia (terracota) */
+.choice--filled {
+  background: var(--brand);
+  border: var(--border-width) solid var(--brand);
+  color: #FFFFFF;
+}
+.choice--filled:hover {
+  background: color-mix(in srgb, var(--brand) 90%, #000000);
+  border-color: color-mix(in srgb, var(--brand) 90%, #000000);
+}
+
+/* Variante contornada */
+.choice--outlined {
+  background: transparent;
+  border: 2px solid var(--ink);
+  color: var(--ink);
+}
+.choice--outlined .choice-subtitle {
+  color: var(--muted);
+}
+.choice--outlined:hover {
+  background: var(--neutral-tint);
+}
+
+/* Escolhas lado a lado no desktop */
+@media (min-width: 1024px) {
+  .choices {
+    flex-direction: row;
+  }
+  .choice {
+    flex: 1;
+  }
+}
+
+/* Botão primário em largura total só no mobile */
+@media (min-width: 720px) {
+  .btn-primary {
+    width: auto;
+  }
+}
+
+/* ---------- Pills ---------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.8125rem;    /* 13px */
+  font-weight: 600;
+  white-space: nowrap;
+}
+.pill--brand {
+  background: var(--brand-tint);
+  color: var(--brand-tint-ink);
+  border: var(--border-width) solid var(--brand-tint);
+}
+.pill--neutral {
+  background: var(--neutral-tint);
+  color: var(--neutral-tint-ink);
+  border: var(--border-width) solid var(--neutral-tint);
+}
+.pill--ok {
+  background: var(--ok-tint);
+  color: var(--ok);
+  border: var(--border-width) solid var(--ok);
+}
+
+/* ---------- Card ---------- */
+.card {
+  background: var(--surface);
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 16px;
+}
+@media (min-width: 720px) {
+  .card {
+    padding: 20px;
+  }
+}
+
+/* ---------- Linha de lista ("O bairro está procurando") ---------- */
+.list-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  font-weight: 600;
+  font-size: 1.0625rem;
+}
+.list-line:last-child {
+  border-bottom: none;
+}
+
+/* ---------- Passo (stepper vertical) ---------- */
+.stepper {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1rem;
+}
+.step-dot {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 2px solid var(--step-pending);
+  color: var(--muted);
+  font-weight: 600;
+}
+.step--done .step-dot {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: #FFFFFF;
+}
+.step--current {
+  font-weight: 700;
+}
+.step--current .step-dot {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+.step--pending {
+  color: var(--muted);
+}
+
+/* ---------- Chips de filtro ---------- */
+.filter-chips {
+  display: flex;
+  gap: 8px;
+  /* em telas estreitas, rolam dentro do próprio contêiner, sem rolar a página */
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.filter-chip {
+  min-height: 44px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  border: var(--border-width) solid var(--line-strong);
+  background: transparent;
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+}
+.filter-chip.is-active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #FFFFFF;
+}
+.filter-chip:not(.is-active):hover {
+  background: var(--neutral-tint);
+}
+
+/* ---------- Avatar com inicial ---------- */
+.avatar {
+  width: 52px;
+  height: 52px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--avatar-bg);
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+/* ---------- Card de prestador (vitrine) ---------- */
+.provider-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+@media (min-width: 720px) {
+  .provider-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (min-width: 1024px) {
+  .provider-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.provider-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.provider-card .provider-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.provider-card .provider-name {
+  font-weight: 600;
+  font-size: 1.125rem;     /* 18px */
+}
+.provider-card .provider-sub {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+/* nota média das avaliações (Fase 5): discreta, cor de destaque no número */
+.provider-rating {
+  color: var(--muted);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+/* ---------- Painel de filtro (Profissionais) ---------- */
+/* <details> com o funil: funciona sem JavaScript, abre e fecha nativamente */
+.filtro-painel {
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  margin-top: 12px;
+}
+.filtro-painel summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+}
+.filtro-painel summary::-webkit-details-marker {
+  display: none;
+}
+.filtro-painel summary:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: -3px;
+  border-radius: var(--radius-card);
+}
+.filtro-painel summary .pill {
+  margin-left: 4px;
+}
+.filtro-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 4px 16px 16px;
+  border-top: 1px solid var(--line);
+}
+.filtro-form fieldset {
+  border: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+}
+.filtro-form legend {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 10px;
+  padding: 0;
+}
+.filtro-form label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 1rem;
+}
+.filtro-form input[type="radio"],
+.filtro-form input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--brand);
+}
+.filtro-acoes {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+/* ---------- Comentários das avaliações no card ---------- */
+.review-details summary {
+  cursor: pointer;
+  color: var(--brand);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  list-style: none;
+}
+.review-details summary::-webkit-details-marker {
+  display: none;
+}
+.review-list {
+  list-style: none;
+  padding: 8px 0 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid var(--line);
+}
+.review-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9375rem;
+  padding-top: 8px;
+}
+.review-note {
+  color: var(--brand);
+  font-weight: 700;
+}
+.review-comment {
+  color: var(--ink);
+}
+.review-meta {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+/* ---------- Seções e títulos de página ---------- */
+.page-head {
+  margin-bottom: 24px;
+}
+.section {
+  margin-top: 32px;
+}
+
+/* ============================================================
+   Fase 1 — cabeçalho autenticado, tema, formulários e popup
+   ============================================================ */
+
+/* Ações do cabeçalho: chip de bairro + tema + entrar/sair */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Botão-ícone circular (lua/sol, fechar popup) */
+.icon-button {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: var(--border-width) solid var(--line-strong);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+.icon-button:hover {
+  background: var(--neutral-tint);
+}
+
+/* Nome do usuário logado e botão "Sair" */
+.header-user {
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--ink);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  max-width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.logout-form {
+  display: inline-flex;
+}
+.link-button {
+  background: none;
+  border: none;
+  padding: 10px 8px;
+  min-height: 44px;
+  color: var(--brand);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.btn-compact {
+  min-height: 44px;
+  padding: 8px 16px;
+  font-size: 0.9375rem;
+}
+
+/* Botão destrutivo (excluir conta) */
+.btn-danger {
+  background: transparent;
+  border: 2px solid #A61B1B;
+  color: #A61B1B;
+  min-height: 48px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: var(--radius-button);
+}
+.btn-danger:hover {
+  background: #A61B1B;
+  color: #FFFFFF;
+}
+
+/* ---------- Páginas de formulário ---------- */
+.form-page {
+  max-width: 560px;
+}
+.form-alt {
+  margin-top: 16px;
+}
+.profile-role {
+  color: var(--muted);
+  font-size: 0.9375rem;
+  margin-top: -8px;
+  margin-bottom: 16px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-field label {
+  font-weight: 600;
+  font-size: 1rem;
+}
+.form-field input[type="text"],
+.form-field input[type="password"],
+.form-field select {
+  min-height: 52px;
+  padding: 12px 16px;
+  border-radius: var(--radius-button);
+  border: var(--border-width) solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 1.0625rem;
+  font-family: var(--font-body);
+}
+.form-field input:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+}
+.field-help {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+/* Mensagens de erro do formulário */
+.form-errors {
+  margin-top: 16px;
+  border: 2px solid #A61B1B;
+  border-radius: var(--radius-card);
+  padding: 12px 16px;
+  color: #A61B1B;
+  font-size: 0.9375rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Escolha de perfil como cartões grandes (radio escondido, visual de escolha) */
+.role-choice {
+  border: none;
+  padding: 0;
+  gap: 12px;
+}
+.role-choice legend {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 12px;
+}
+.choice-radio {
+  cursor: pointer;
+  position: relative;
+}
+.choice-radio input {
+  position: absolute;
+  opacity: 0;
+}
+.choice-radio input:focus-visible ~ .choice-title {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+}
+.choice-radio:has(input:checked) {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #FFFFFF;
+}
+.choice-radio:has(input:checked) .choice-subtitle {
+  color: #FFFFFF;
+  opacity: 0.92;
+}
+
+/* Consentimento LGPD */
+.consent label {
+  display: flex;
+  gap: 10px;
+  font-weight: 400;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+.consent input {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  margin-top: 2px;
+}
+
+/* Zona de exclusão de conta */
+.danger-zone {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.danger-zone h2 {
+  font-size: 1.25rem;
+}
+.danger-zone .btn-danger {
+  margin-top: 8px;
+}
+
+/* Sugestões de bairros (search bar) */
+.sugestoes {
+  list-style: none;
+  padding: 4px;
+  margin: 0;
+  border: var(--border-width) solid var(--line-strong);
+  border-radius: var(--radius-button);
+  background: var(--surface);
+}
+.sugestoes button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  min-height: 44px;
+  padding: 10px 12px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: var(--font-body);
+  color: var(--ink);
+  cursor: pointer;
+}
+.sugestoes button:hover {
+  background: var(--neutral-tint);
+}
+
+/* ---------- Popup de entrada (<dialog>) ---------- */
+.modal {
+  width: min(440px, calc(100vw - 32px));
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  color: var(--ink);
+  padding: 20px;
+}
+.modal::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.modal-title {
+  font-family: var(--font-title);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.modal .form {
+  margin-top: 8px;
+}
+.modal-alt {
+  margin-top: 16px;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+/* Popup centralizado: o reset global zera margens e desativa o
+   margin:auto padrão do <dialog> do navegador — devolvemos aqui. */
+.modal {
+  margin: auto;
+}
+
+/* Código de recuperação mostrado uma única vez */
+.recovery-code {
+  text-align: center;
+  padding: 24px 16px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+.recovery-code-value {
+  font-family: var(--font-title);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--brand);
+  display: block;
+  margin-bottom: 12px;
+}
+.recovery-input {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.security-zone {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.security-zone h2 {
+  font-size: 1.25rem;
+}
+.security-zone .btn-secondary {
+  margin-top: 8px;
+}
+
+/* Lista de habilidades do perfil */
+.skill-list {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 8px 16px;
+}
+.skill-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.skill-item:last-child {
+  border-bottom: none;
+}
+
+/* ---------- Abas da vitrine (Demandas / Profissionais) ---------- */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.tab {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 20px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--muted);
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+}
+.tab.is-active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+.tab:not(.is-active):hover {
+  color: var(--ink);
+}
+
+.vitrine-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.vitrine-head h2 {
+  font-size: 1.25rem;
+}
+
+/* Linha de demanda: pill de categoria + descrição */
+.demand-line {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 8px;
+}
+.demand-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.demand-desc {
+  font-weight: 400;
+  font-size: 1rem;
+}
+.demand-actions {
+  display: flex;
+  gap: 16px;
+}
+.demand-excluir {
+  color: #A61B1B;
+}
+.demand-bairro {
+  font-weight: 600;
+}
+
+/* Estado vazio das listagens */
+.empty-state {
+  text-align: center;
+  padding: 32px 20px;
+}
+.empty-state .btn-primary {
+  margin-top: 12px;
+}
+
+/* ---------- Perfil: cartão de identidade e atalhos ---------- */
+.profile-page {
+  max-width: 640px;
+}
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+.profile-id {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.profile-name {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+.profile-sub {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.shortcuts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+@media (min-width: 720px) {
+  .shortcuts {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.shortcut {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-decoration: none;
+  color: var(--ink);
+  min-height: 44px;
+}
+.shortcut:hover {
+  background: var(--neutral-tint);
+}
+.shortcut strong {
+  font-size: 1.0625rem;
+}
+
+/* ---------- Cards de demanda (vitrine) ---------- */
+.demand-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+.demand-card summary {
+  display: flex;
+  align-items: center;
+  gap: 8px 12px;        /* row-gap maior: linhas quebradas não ficam coladas */
+  flex-wrap: wrap;
+  cursor: pointer;
+  min-height: 44px;
+  list-style: none;
+}
+/* a descrição ocupa o meio da linha; as pills ficam agrupadas à direita */
+.demand-card summary .demand-desc {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+.demand-card summary .demand-badges {
+  margin-left: auto;
+}
+/* o foco (teclado/click) abraça o card em vez de flutuar solto em volta */
+.demand-card summary:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: -3px;
+  border-radius: 12px;
+}
+/* as pills de status andam em bloco quando a tela estreita */
+.demand-badges {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: auto;
+  flex-wrap: nowrap;
+}
+.demand-card summary::-webkit-details-marker {
+  display: none;
+}
+.demand-card summary::before {
+  content: "▸";
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+.demand-card[open] summary::before {
+  content: "▾";
+}
+.demand-offer {
+  font-weight: 700;
+  color: var(--brand);
+  white-space: nowrap;
+}
+.demand-detail {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.demand-actions {
+  margin-top: 4px;
+}
+.proposta-lista {
+  margin-top: 4px;
+}
+.demand-meta {
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+.demand-meta strong {
+  color: var(--ink);
+}
+
+/* Filtro "todos os bairros" do prestador */
+.filtro-demandas {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.filtro-demandas label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 0.9375rem;
+}
+.filtro-demandas input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+
+/* ---------- Propostas ---------- */
+/* Respiro entre filtros, estado vazio e a lista (feedback do grupo) */
+.filtro-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+.section .empty-state {
+  margin-top: 16px;
+}
+.demanda-resumo {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.portfolio-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+.portfolio-badge svg {
+  color: var(--brand);
+}
+.form textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px 16px;
+  border-radius: var(--radius-button);
+  border: var(--border-width) solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 1.0625rem;
+  font-family: var(--font-body);
+  resize: vertical;
+}
+.demand-attended {
+  opacity: 0.75;
+}
+.proposta-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.proposta-item {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.proposta-aceita {
+  border-color: var(--ok);
+}
+.proposta-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+/* ações do card (botão aceitar + explicação) com respiro próprio */
+.proposta-acoes {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 4px;
+}
+.proposta-acoes .field-help {
+  margin: 0;
+}
+.proposta-mensagem {
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--neutral-tint);
+  border-radius: var(--radius-button);
+  padding: 10px 14px;
+}
+
+/* Selo verificado clicável: abre quais trilhas o prestador concluiu */
+.selo-detalhe {
+  display: inline-block;
+}
+.selo-detalhe summary {
+  list-style: none;
+  cursor: pointer;
+  display: inline-flex;
+}
+.selo-detalhe summary::-webkit-details-marker {
+  display: none;
+}
+.selo-detalhe summary:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 999px;
+}
+.selo-trilhas {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 10px 14px;
+  border: 1px solid var(--ok);
+  border-radius: var(--radius-button);
+  background: var(--ok-tint);
+  color: var(--ok);
+  font-size: 0.9375rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.whatsapp-link {
+  color: var(--brand);
+  font-weight: 600;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ============================================================
+   Fase 3 — trilhas como timeline de cursos
+   ============================================================ */
+
+/* Lista de trilhas na home de trilhas */
+.track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+.track-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.track-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.track-title {
+  font-family: var(--font-title);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+.track-title a {
+  color: var(--ink);
+  text-decoration: none;
+}
+.track-title a:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--brand);
+  text-decoration-thickness: 2px;
+}
+.track-meta {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+.track-desc {
+  font-size: 1rem;
+}
+.track-progress {
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+/* Timeline de etapas (stepper vertical com cards) */
+.timeline {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
+}
+.timeline-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.timeline-step .step-dot {
+  margin-top: 14px;
+}
+.step-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.step-title {
+  font-family: var(--font-title);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+/* Etapa atual: destaque com borda terracota (uma decisão por tela) */
+.timeline-step.step--current .step-body {
+  border-color: var(--brand);
+}
+.playlist-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.playlist-links a {
+  color: var(--brand);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.playlist-links a:hover {
+  text-decoration: underline;
+}
+.step-done-note {
+  color: var(--ok);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+/* Termo de autodeclaração e banner de selo */
+.termo {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+}
+.termo h2 {
+  font-family: var(--font-title);
+  font-size: 1.125rem;      /* 18px: menor que um título de página */
+  font-weight: 700;
+}
+.termo p {
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+.termo .consent {
+  margin: 0;
+}
+/* checkbox do termo: menor, alinhado com o texto */
+.termo .consent input {
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+}
+/* botão do termo: proporcional ao card, não largura total */
+.termo .btn-primary {
+  width: auto;
+  min-height: 48px;
+  font-size: 1rem;
+  padding: 10px 20px;
+  align-self: flex-start;
+}
+.selo-banner {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  border-color: var(--ok);
+}
+.selo-banner span {
+  flex: 1;
+  min-width: 200px;
+}
